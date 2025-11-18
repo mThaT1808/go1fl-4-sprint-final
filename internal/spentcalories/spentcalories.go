@@ -15,24 +15,30 @@ const (
 
 func parseTraining(data string) (int, string, time.Duration, error) {
 	// TODO: реализовать функцию
+	return 0, "", 0, nil
 }
 
 func distance(steps int, height float64) float64 {
 	// TODO: реализовать функцию
+	return 0
 }
 
 func meanSpeed(steps int, height float64, duration time.Duration) float64 {
 	// TODO: реализовать функцию
+	return 0
 }
 
 func TrainingInfo(data string, weight, height float64) (string, error) {
 	// TODO: реализовать функцию
+	return "", nil
 }
 
 func RunningSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
 	// TODO: реализовать функцию
+	return 0, nil
 }
 
 func WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
 	// TODO: реализовать функцию
+	return 0, nil
 }
