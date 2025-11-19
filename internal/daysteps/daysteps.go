@@ -64,6 +64,10 @@ func DayActionInfo(data string, weight, height float64) string {
 	distanceKm := float64(distance / mInKm)
 	// Вычислить количество калорий, потраченных на прогулке. Функция для вычисления калорий WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error).
 	calories, err := spentcalories.WalkingSpentCalories(steps, 0, 0, duration)
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
 
 	message := fmt.Sprintf("Количество шагов: %d \nДистанция составила %f км. \nВы сожгли %f ккал.", steps, distanceKm, calories)
 	return message
