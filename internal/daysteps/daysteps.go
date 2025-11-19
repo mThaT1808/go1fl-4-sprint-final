@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/Yandex-Practicum/tracker/internal/spentcalories"
 )
 
 const (
@@ -45,6 +47,24 @@ func parsePackage(data string) (int, time.Duration, error) {
 }
 
 func DayActionInfo(data string, weight, height float64) string {
-	// TODO: реализовать функцию
-	return ""
+	// Получить данные о количестве шагов и продолжительности прогулки с помощью функции parsePackage(). 
+	steps, duration, err := parsePackage(data)
+	// В случае возникновения ошибки вывести её на экран и вернуть пустую строку.
+	if err != nil {
+		fmt.Println(err)
+		return ""
+	}
+	// Проверить, чтобы количество шагов было больше 0. В противном случае вернуть пустую строку.
+	if steps <= 0 {
+		return ""
+	}
+	// Вычислить дистанцию в метрах. Дистанция равна произведению количества шагов на длину шага. Константа stepLength (длина шага) уже определена в коде.
+	distance := float64(steps) * stepLength
+	// Перевести дистанцию в километры, разделив её на число метров в километре (константа mInKm, определена в пакете).
+	distanceKm := float64(distance / mInKm)
+	// Вычислить количество калорий, потраченных на прогулке. Функция для вычисления калорий WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error).
+	calories, err := spentcalories.WalkingSpentCalories(steps, 0, 0, duration)
+
+	message := fmt.Sprintf("Количество шагов: %d \nДистанция составила %f км. \nВы сожгли %f ккал.", steps, distanceKm, calories)
+	return message
 }
