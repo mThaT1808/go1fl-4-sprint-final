@@ -41,8 +41,11 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 }
 
 func distance(steps int, height float64) float64 {
-	// TODO: реализовать функцию
-	return 0
+	// рассчитайте длину шага. Для этого умножьте высоту пользователя на коэффициент длины шага stepLengthCoefficient.
+	step := height * stepLengthCoefficient
+	// умножьте пройденное количество шагов на длину шага. разделите полученное значение на число метров в километре
+	distance := (float64(steps) * step) / float64(mInKm)
+	return distance
 }
 
 func meanSpeed(steps int, height float64, duration time.Duration) float64 {
