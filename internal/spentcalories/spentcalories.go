@@ -1,6 +1,9 @@
 package spentcalories
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -14,8 +17,27 @@ const (
 )
 
 func parseTraining(data string) (int, string, time.Duration, error) {
-	// TODO: реализовать функцию
-	return 0, "", 0, nil
+	// Разделить строку на слайс строк
+	parts := strings.Split(data, ",")
+	// Проверить, чтобы длина слайса была равна 3, так как в строке данных у нас количество шагов, вид активности и продолжительность.
+	if len(parts) != 3 {
+		return 0, "", 0, fmt.Errorf("ошибка при разделении строки. Ожидается формат: '3456,Ходьба,3h00m'")	
+	}
+	// Преобразовать первый элемент слайса (количество шагов) в тип int. 
+	steps, err := strconv.Atoi(parts[0])
+	// Обработать возможные ошибки. При их возникновении из функции вернуть 0 шагов, 0 продолжительность и ошибку.
+	if err != nil {
+		return 0, "", 0, fmt.Errorf("ошибка при преобразовании шагов: %v", err)
+	}
+	activityType := parts[1]
+	// Преобразовать третий элемент слайса в time.Duration. В пакете time есть метод для парсинга строки в time.Duration.
+	duration, err := time.ParseDuration(parts[2])
+	// Обработать возможные ошибки. При их возникновении из функции вернуть 0 шагов, 0 продолжительность и ошибку.
+	if err != nil {
+		return 0, "", 0, fmt.Errorf("ошибка при преобразовании продолжительности: %v", err)
+	}
+	// Если всё прошло без ошибок, верните количество шагов, вид активности, продолжительность и nil (для ошибки).
+	return steps, activityType, duration, nil
 }
 
 func distance(steps int, height float64) float64 {
