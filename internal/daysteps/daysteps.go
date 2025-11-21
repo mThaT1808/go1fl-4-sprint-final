@@ -2,6 +2,7 @@ package daysteps
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -42,6 +43,9 @@ func parsePackage(data string) (int, time.Duration, error) {
 	if err != nil {
 		return 0, 0, fmt.Errorf("ошибка определении длительности: %v", err)
 	}
+	if duration <= 0 {
+		return 0, 0, fmt.Errorf("ошибка определении длительности: неверная продолжительность - ноль")
+	}
 	// Если всё прошло без ошибок, верните количество шагов, продолжительность и nil (для ошибки).
 	return steps, duration, nil
 }
@@ -51,7 +55,7 @@ func DayActionInfo(data string, weight, height float64) string {
 	steps, duration, err := parsePackage(data)
 	// В случае возникновения ошибки вывести её на экран и вернуть пустую строку.
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return ""
 	}
 	// Проверить, чтобы количество шагов было больше 0. В противном случае вернуть пустую строку.
@@ -63,12 +67,12 @@ func DayActionInfo(data string, weight, height float64) string {
 	// Перевести дистанцию в километры, разделив её на число метров в километре (константа mInKm, определена в пакете).
 	distanceKm := float64(distance / mInKm)
 	// Вычислить количество калорий, потраченных на прогулке. Функция для вычисления калорий WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error).
-	calories, err := spentcalories.WalkingSpentCalories(steps, 0, 0, duration)
+	calories, err := spentcalories.WalkingSpentCalories(steps, weight, height, duration)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return ""
 	}
 
-	message := fmt.Sprintf("Количество шагов: %d \nДистанция составила %f км. \nВы сожгли %f ккал.", steps, distanceKm, calories)
+	message := fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.\n", steps, distanceKm, calories)
 	return message
 }
