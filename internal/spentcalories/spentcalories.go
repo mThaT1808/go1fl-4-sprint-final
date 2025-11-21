@@ -2,6 +2,7 @@ package spentcalories
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -63,8 +64,38 @@ func meanSpeed(steps int, height float64, duration time.Duration) float64 {
 }
 
 func TrainingInfo(data string, weight, height float64) (string, error) {
-	// TODO: реализовать функцию
-	return "", nil
+	// Получить значения из строки данных с помощью функции parseTraining().
+	steps, activityType, duration, err := parseTraining(data)
+	// Обработать возможные ошибки и вывести их в лог с помощью log.Println(err).
+	if err != nil {
+		log.Println(err)
+	}
+	// Проверить, какой вид тренировки был передан в строке, которую парсили (лучше использовать switch).
+	// Для каждого из видов тренировки рассчитать дистанцию, среднюю скорость и калории.
+	calories := float64(0)
+	switch activityType {
+		case "Бег": {
+			calories, err = RunningSpentCalories(steps, weight, height, duration)
+			if err != nil {
+				return "", fmt.Errorf("ошибка при определении типа тренеровки: %v", err)
+			}
+		}
+		case "Шаг": {
+			calories, err = WalkingSpentCalories(steps, weight, height, duration)
+			if err != nil {
+				return "", fmt.Errorf("ошибка при определении типа тренеровки: %v", err)
+			}
+		} 
+		// Если был передан неизвестный тип тренировки, вернуть ошибку с текстом неизвестный тип тренировки.
+		default: 
+			return "", fmt.Errorf("ошибка при определении типа тренеровки: неизвестный тип тренировки")
+	}
+	distance := distance(steps, height)
+	speed := meanSpeed(steps, height, duration)
+	// Для каждого вида тренировки сформировать и вернуть строку, образец которой был представлен выше.
+	message := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.1f км.\nСкорость: %.1f км/ч\nСожгли калорий: %.0f", activityType, duration.Hours(), distance, speed, calories)
+
+	return message, nil
 }
 
 func RunningSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
