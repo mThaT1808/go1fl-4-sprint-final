@@ -30,12 +30,18 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 	if err != nil {
 		return 0, "", 0, fmt.Errorf("ошибка при преобразовании шагов: %v", err)
 	}
+	if steps <= 0 {
+		return 0, "", 0, fmt.Errorf("ошибка при преобразовании шагов: шагов должно быть больше нуля")
+	}
 	activityType := parts[1]
 	// Преобразовать третий элемент слайса в time.Duration. В пакете time есть метод для парсинга строки в time.Duration.
 	duration, err := time.ParseDuration(parts[2])
 	// Обработать возможные ошибки. При их возникновении из функции вернуть 0 шагов, 0 продолжительность и ошибку.
 	if err != nil {
 		return 0, "", 0, fmt.Errorf("ошибка при преобразовании продолжительности: %v", err)
+	}
+	if duration <= 0 {
+		return 0, "", 0, fmt.Errorf("ошибка при преобразовании продолжительности: продолжительность должна быть больше нуля")
 	}
 	// Если всё прошло без ошибок, верните количество шагов, вид активности, продолжительность и nil (для ошибки).
 	return steps, activityType, duration, nil
@@ -93,7 +99,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 	distance := distance(steps, height)
 	speed := meanSpeed(steps, height, duration)
 	// Для каждого вида тренировки сформировать и вернуть строку, образец которой был представлен выше.
-	message := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.1f км.\nСкорость: %.1f км/ч\nСожгли калорий: %.0f", activityType, duration.Hours(), distance, speed, calories)
+	message := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n", activityType, duration.Hours(), distance, speed, calories)
 
 	return message, nil
 }
