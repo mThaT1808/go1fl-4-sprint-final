@@ -125,6 +125,27 @@ func RunningSpentCalories(steps int, weight, height float64, duration time.Durat
 }
 
 func WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
-	// TODO: реализовать функцию
-	return 0, nil
+	// Проверить входные параметры на корректность. Если параметры некорректны, вернуть 0 калорий и соответствующую ошибку.
+	if steps <= 0 {
+		return 0, fmt.Errorf("шагов должно быть больше нуля")
+	}
+	if weight <= 0 {
+		return 0, fmt.Errorf("вес быть больше нуля")
+	}
+	if height <= 0 {
+		return 0, fmt.Errorf("рост должен быть больше нуля")
+	}
+	if duration <= 0 {
+		return 0, fmt.Errorf("длительность должна быть больше нуля")
+	}
+	// Рассчитать среднюю скорость с помощью meanSpeed().
+	speed := meanSpeed(steps, height, duration)
+	// Рассчитать количество калорий.
+	// Переведите продолжительность в минуты с помощью функции из пакета time.
+	durationMinutes := duration.Minutes()
+	// Умножьте вес пользователя на среднюю скорость и продолжительность в минутах.
+	// Разделите результат на число минут в часе для получения количества потраченных калорий.
+	// Умножить полученное число калорий на корректирующий коэффициент walkingCaloriesCoefficient. Соответствующая константа объявлена в пакете. Вернуть полученное значение.
+	spentCalories := ((weight * speed * durationMinutes) / minInH) * walkingCaloriesCoefficient
+	return spentCalories, nil
 }
